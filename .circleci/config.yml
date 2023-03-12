@@ -5,7 +5,7 @@ orbs:
 jobs:
   pep8:
     docker:
-      - image: 'circleci/python:3.10.1'
+      - image: circleci/python:3.10.1
     steps:
       - checkout
       - run:
@@ -16,23 +16,27 @@ jobs:
           command: "sudo flake8 --max-complexity 10\n"
   build_test:
     docker:
-      - image: 'circleci/python:3.10.1'
+      - image: circleci/python:3.10.1
     steps:
       - checkout
       - run:
-          name: 'Install Python Dependencies'
+          name: Install Python Dependencies
           command: |
             echo 'export PATH=~$PATH:~/.local/bin' >> $BASH_ENV && source $BASH_ENV
             pip install --user -r requirements.txt
+      - run:
+          name: Run Tests
+          command: |
+            pytest
   build_push_image_cloud_run_mangaged:
     docker:
-      - image: 'circleci/python:3.10.1'
+      - image: circleci/python:3.10.1
     steps:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: false
       - run:
-          name: 'Build app binary and Docker image'
+          name: Build app binary and Docker image
           command: |
             echo 'export PATH=~$PATH:~/.local/bin' >> $BASH_ENV
             echo ${GCP_PROJECT_KEY} | base64 --decode --ignore-garbage > $HOME/gcloud-service-key.json
@@ -43,18 +47,17 @@ jobs:
             pyinstaller -F hello_world.py
             docker build -t us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME -t us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME:$TAG .
       - gcp-gcr/gcr-auth:
-      - gcp-gcr/gcr-auth:
           gcloud-service-key: GOOGLE_CLOUD_KEYS
           google-project-id: GOOGLE_PROJECT_ID
           google-compute-zone: GOOGLE_COMPUTE_ZONE
       - gcp-gcr/push-image:
           google-project-id: GOOGLE_PROJECT_ID
-          registry-url: us.gcr.io
+          registry-url: "us.gcr.io"
           image: $IMAGE_NAME
       - cloudrun/deploy:
-          platform: managed
-          image: us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME
-          service-name: orb-gcp-cloud-run
+          platform: "managed"
+          image: "us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME"
+          service-name: "orb-gcp-cloud-run"
           region: $GOOGLE_COMPUTE_ZONE
           unauthenticated: true
 workflows:
