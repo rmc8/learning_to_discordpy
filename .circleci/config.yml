@@ -21,7 +21,9 @@ jobs:
       - checkout
       - run:
           name: 'Install Python Dependencies'
-          command: "echo 'export PATH=~$PATH:~/.local/bin' >> $BASH_ENV && source $BASH_ENV\npip install --user -r requirements.txt\n"
+          command: |
+            echo 'export PATH=~$PATH:~/.local/bin' >> $BASH_ENV && source $BASH_ENV
+            pip install --user -r requirements.txt
   build_push_image_cloud_run_mangaged:
     docker:
       - image: 'circleci/python:3.10.1'
