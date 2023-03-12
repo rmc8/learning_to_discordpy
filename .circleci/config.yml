@@ -1,26 +1,50 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine.
-# See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
-
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
+orbs:
+  gcp-gcr: circleci/gcp-gcr@0.6.1
+  cloudrun: circleci/gcp-cloud-run@1.0.0
 jobs:
-  say-hello:
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
+  build_test:
     docker:
-      - image: cimg/base:stable
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+      - image: 'circleci/python:3.10.1'
     steps:
       - checkout
       - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
-
-# Invoke jobs via workflows
-# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+          name: 'Install Python Dependencies'
+          command: "echo 'export PATH=~$PATH:~/.local/bin' >> $BASH_ENV && source $BASH_ENV\npip install --user -r requirements.txt\n"
+      - run:
+          name: addFlake8
+          command: "sudo pip install flake8\n"
+      - run:
+          name: pep8Check
+          command: "sudo flake8 --max-complexity 10\n"
+  build_push_image_cloud_run_mangaged:
+    docker:
+      - image: 'circleci/python:3.10.1'
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: false
+      - run:
+          name: 'Build app binary and Docker image'
+          command: "echo 'export PATH=~$PATH:~/.local/bin' >> $BASH_ENV\necho ${GCP_PROJECT_KEY} | base64 --decode --ignore-garbage > $HOME/gcloud-service-key.json\necho 'export GOOGLE_CLOUD_KEYS=$(cat $HOME/gcloud-service-key.json)' >> $BASH_ENV\necho 'export TAG=${CIRCLE_SHA1}' >> $BASH_ENV\necho 'export IMAGE_NAME=$CIRCLE_PROJECT_REPONAME' >> $BASH_ENV && source $BASH_ENV\npip install --user -r requirements.txt\npyinstaller -F hello_world.py\ndocker build -t us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME -t us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME:$TAG .\n"
+      - gcp-gcr/gcr-auth:
+          gcloud-service-key: GOOGLE_CLOUD_KEYS
+          google-project-id: GOOGLE_PROJECT_ID
+          google-compute-zone: GOOGLE_COMPUTE_ZONE
+      - gcp-gcr/push-image:
+          google-project-id: GOOGLE_PROJECT_ID
+          registry-url: us.gcr.io
+          image: $IMAGE_NAME
+      - cloudrun/deploy:
+          platform: managed
+          image: us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME
+          service-name: orb-gcp-cloud-run
+          region: $GOOGLE_COMPUTE_ZONE
+          unauthenticated: true
 workflows:
-  say-hello-workflow:
+  build_test_deploy:
     jobs:
-      - say-hello
+      - build_test
+      - build_push_image_cloud_run_mangaged:
+          requires:
+            - build_test
