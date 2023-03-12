@@ -3,6 +3,17 @@ orbs:
   gcp-gcr: circleci/gcp-gcr@0.6.1
   cloudrun: circleci/gcp-cloud-run@1.0.0
 jobs:
+  pep8:
+    docker:
+      - image: 'circleci/python:3.10.1'
+    step:
+      - checkout
+      - run:
+          name: addFlake8
+          command: "sudo pip install flake8\n"
+      - run:
+          name: pep8Check
+          command: "sudo flake8 --max-complexity 10\n"
   build_test:
     docker:
       - image: 'circleci/python:3.10.1'
@@ -11,12 +22,6 @@ jobs:
       - run:
           name: 'Install Python Dependencies'
           command: "echo 'export PATH=~$PATH:~/.local/bin' >> $BASH_ENV && source $BASH_ENV\npip install --user -r requirements.txt\n"
-      - run:
-          name: addFlake8
-          command: "sudo pip install flake8\n"
-      - run:
-          name: pep8Check
-          command: "sudo flake8 --max-complexity 10\n"
   build_push_image_cloud_run_mangaged:
     docker:
       - image: 'circleci/python:3.10.1'
@@ -44,6 +49,7 @@ jobs:
 workflows:
   build_test_deploy:
     jobs:
+      - pep8
       - build_test
       - build_push_image_cloud_run_mangaged:
           requires:
