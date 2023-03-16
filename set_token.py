@@ -10,7 +10,7 @@ class DockerFile:
             return f.read()
 
     def write(self, query: str):
-        with open(self.path, mode="r", encoding=self.encoding) as f:
+        with open(self.path, mode="w", encoding=self.encoding) as f:
             print(query, file=f)
 
 

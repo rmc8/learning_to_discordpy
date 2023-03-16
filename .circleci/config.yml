@@ -77,4 +77,5 @@ workflows:
       - build_push_image_cloud_run_mangaged:
           requires:
             - pep8
+            - set_discord_token
             - build_test
