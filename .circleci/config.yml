@@ -55,7 +55,7 @@ jobs:
       - run:
           name: Deploy to compute engine
           command: |
-            echo "hoge"
+            gcloud compute ssh --zone "us-central1-a" "discord-bot-test"  --project $GOOGLE_PROJECT_ID
       # pyinstaller -F hello_world.py
       # - gcp-gcr/gcr-auth:
       #     gcloud-service-key: GOOGLE_CLOUD_KEYS
