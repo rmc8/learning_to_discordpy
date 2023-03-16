@@ -3,7 +3,6 @@ import random
 import discord
 from discord import app_commands
 from discord.ext import commands
-from pandas import DataFrame
 
 from .. import MY_GUILD_ID
 
@@ -42,6 +41,7 @@ def judgment(me) -> str:
 
 
 class Janken(commands.Cog):
+
     def __init__(self, bot):
         self.bot = bot
 
