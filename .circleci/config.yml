@@ -27,6 +27,9 @@ jobs:
   build_push_image_compute_engine_mangaged:
     docker:
       - image: circleci/python:3.10.1
+        auth:
+          username: $DOCKERHUB_USER
+          password: $DOCKERHUB_PASSWORD
     steps:
       - checkout
       - setup_remote_docker:
@@ -34,7 +37,6 @@ jobs:
       - run:
           name: Build app binary and Docker image
           command: |
-            $DOCKERHUB_PASSWORD | sudo docker login --username $DOCKERHUB_USER --password-stdin
             echo 'export PATH=~$PATH:~/.local/bin' >> $BASH_ENV
             echo ${GCP_PROJECT_KEY} | base64 --decode --ignore-garbage > $HOME/gcloud-service-key.json
             echo 'export GOOGLE_CLOUD_KEYS=$(cat $HOME/gcloud-service-key.json)' >> $BASH_ENV
@@ -42,7 +44,7 @@ jobs:
             echo 'export IMAGE_NAME=$CIRCLE_PROJECT_REPONAME' >> $BASH_ENV && source $BASH_ENV
             pip install --user -r requirements.txt
             docker build -t us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME -t us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME:$TAG .
-
+      # sudo docker login --username $DOCKERHUB_USER --password-stdin $DOCKERHUB_PASSWORD
       # pyinstaller -F hello_world.py
       # - gcp-gcr/gcr-auth:
       #     gcloud-service-key: GOOGLE_CLOUD_KEYS
