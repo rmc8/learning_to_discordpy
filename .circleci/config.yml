@@ -46,7 +46,7 @@ jobs:
             pip install --user -r requirements.txt
             ls
             docker build -t mikohei/$GOOGLE_PROJECT_ID/$IMAGE_NAME -t mikohei/$GOOGLE_PROJECT_ID/$IMAGE_NAME:$TAG .
-            docker push mikohei/$GOOGLE_PROJECT_ID/$IMAGE_NAME:$TAG
+            sudo docker push mikohei/$GOOGLE_PROJECT_ID/$IMAGE_NAME:$TAG
       # pyinstaller -F hello_world.py
       # - gcp-gcr/gcr-auth:
       #     gcloud-service-key: GOOGLE_CLOUD_KEYS
