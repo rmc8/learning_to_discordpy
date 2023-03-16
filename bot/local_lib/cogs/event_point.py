@@ -89,8 +89,6 @@ def sort_df(df: DataFrame) -> DataFrame:
     return df.sort_values(["live_bonus", "event_bonus", "lower_score_limit"])
 
 
-
-
 def calc(num_of_points_wanted: int) -> str:
     event_point_df = DataFrame(create_event_point_table())
     fil_df = event_point_df[event_point_df["event_point"] ==
@@ -98,12 +96,11 @@ def calc(num_of_points_wanted: int) -> str:
     if fil_df.empty:
         return "該当のイベントポイントを獲得する組み合わせが見つかりませんでした。"
     sorted_df = sort_df(fil_df)
-    return CALC_RESULTS_TEMPLATE.format(
-        res=get_ret_lines(sorted_df)
-    )
+    return CALC_RESULTS_TEMPLATE.format(res=get_ret_lines(sorted_df))
 
 
 class EventPoint(commands.Cog):
+
     def __init__(self, bot):
         self.bot = bot
 
@@ -113,13 +110,23 @@ class EventPoint(commands.Cog):
         await self.bot.tree.sync(guild=discord.Object(MY_GUILD_ID))
         print("sync")
 
-    @app_commands.command(name="calc_point", description="EventPointの調整用の計算機です")
+    @app_commands.command(
+        name="calc_point",
+        description="EventPointの調整用の計算機です",
+    )
     @app_commands.guilds(MY_GUILD_ID)
     @app_commands.checks.has_permissions(administrator=True)
-    async def calc_point(self, interaction: discord.Interaction, tar_point: int):
+    async def calc_point(
+        self,
+        interaction: discord.Interaction,
+        tar_point: int,
+    ):
         ret = calc(tar_point)
         print(ret)
-        await interaction.response.send_message(ret, ephemeral=True)
+        await interaction.response.send_message(
+            ret,
+            ephemeral=True,
+        )
 
 
 async def setup(bot: commands.Bot):

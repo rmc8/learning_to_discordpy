@@ -1,5 +1,3 @@
-
-
 DESCRIPTION_DICT: dict = {
     "search_event_point":
     "".join(
@@ -7,6 +5,3 @@ DESCRIPTION_DICT: dict = {
          "ひとりでライブで独りんぼエンヴィーでポイントを計算します。"])
 }
 MY_GUILD_ID = 1084365632881045646
-
-
-

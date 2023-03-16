@@ -2,15 +2,11 @@ import os
 import asyncio
 
 import discord
-from dotenv import load_dotenv
-from discord import Interaction, Member, ButtonStyle
-from discord.app_commands import CommandTree
 from discord.ext import commands
+from discord import Interaction, Member, ButtonStyle
 
-from local_lib import event_point, janken_game, MY_GUILD_ID
+from local_lib import event_point, MY_GUILD_ID
 from local_lib.cog import INITIAL_EXTENSIONS
-
-load_dotenv()
 
 MY_GUILD = discord.Object(id=MY_GUILD_ID)
 intents = discord.Intents.default()
@@ -27,6 +23,7 @@ class MyClient(commands.Bot):
 token = os.getenv("TestBotPythonDevToken")
 bot = MyClient(intents=intents, command_prefix=".")
 
+
 async def load_extension():
     for cog in INITIAL_EXTENSIONS:
         await bot.load_extension(cog)
@@ -41,9 +38,6 @@ async def on_ready():
 @bot.event
 async def on_message(message):
     print(f"Message from {message.author}: {message.content}")
-
-
-
 
 
 # Contexts
@@ -86,7 +80,6 @@ async def calc_ep(ctx, target_point: int):
     await ctx.send(ret)
 
 
-
 @bot.tree.command()
 async def yurufuwa_test(interaction: Interaction):
     view = discord.ui.View()
@@ -99,13 +92,11 @@ async def yurufuwa_test(interaction: Interaction):
     )
 
 
-
-
-
 async def main():
     async with bot:
         await load_extension()
         await bot.start(token)
+
 
 if __name__ == "__main__":
     asyncio.run(main())

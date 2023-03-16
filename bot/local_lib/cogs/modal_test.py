@@ -4,12 +4,22 @@ from discord.ext import commands
 
 from .. import MY_GUILD_ID
 
-class SelfIntroductionModal(discord.ui.Modal, title="Questionnaire Response"):
-    name = discord.ui.TextInput(label="名前")
-    self_intr = discord.ui.TextInput(label="自己紹介", style=discord.TextStyle.paragraph)
 
-    async def on_submit(self, interaction: discord.Interaction):
-        lines:list = [
+class SelfIntroductionModal(
+        discord.ui.Modal,
+        title="Questionnaire Response",
+):
+    name = discord.ui.TextInput(label="名前")
+    self_intr = discord.ui.TextInput(
+        label="自己紹介",
+        style=discord.TextStyle.paragraph,
+    )
+
+    async def on_submit(
+        self,
+        interaction: discord.Interaction,
+    ):
+        lines: list = [
             f"{self.name}さん、",
             "自己紹介ありがとうございます！"
             "",
@@ -17,10 +27,14 @@ class SelfIntroductionModal(discord.ui.Modal, title="Questionnaire Response"):
             "【自己紹介】",
             f"{self.self_intr}",
         ]
-        await interaction.response.send_message("\n".join(lines), ephemeral=True)
+        await interaction.response.send_message(
+            "\n".join(lines),
+            ephemeral=True,
+        )
 
 
 class ModalTest(commands.Cog):
+
     def __init__(self, bot):
         self.bot = bot
 
