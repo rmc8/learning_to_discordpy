@@ -64,7 +64,6 @@ jobs:
       #     region: $GOOGLE_COMPUTE_ZONE
       #     unauthenticated: true
   deploy:
-    executor: gcp-cli/default
     docker:
       - image: circleci/python:3.10.1
         auth:
