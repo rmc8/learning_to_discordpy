@@ -11,6 +11,7 @@ def write_val(val):
 def main():
     if token := os.getenv("DISCORD_BOT_TOKEN"):
         write_val(f"TestBotPythonDevToken={token}")
+    print("[set_token.py] Done")
 
 
 if __name__ == "__main__":
