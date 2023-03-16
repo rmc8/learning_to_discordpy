@@ -63,6 +63,6 @@ workflows:
     jobs:
       - pep8
       - build_test
-      - build_push_image_cloud_run_mangaged:
+      - build_push_image_compute_engine_mangaged:
           requires:
             - build_test
