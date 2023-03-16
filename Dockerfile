@@ -1,4 +1,5 @@
 FROM python:3.10.1
+ENV TestBotPythonDevToken <<TOKEN>>
 ARG dir=/workdir
 WORKDIR $dir
 COPY . .

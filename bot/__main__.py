@@ -86,6 +86,7 @@ async def yurufuwa_test(interaction: Interaction):
 
 
 async def main():
+    token: str = os.getenv("TestBotPythonDevToken")
     async with bot:
         await load_extension()
         await bot.start(token)
