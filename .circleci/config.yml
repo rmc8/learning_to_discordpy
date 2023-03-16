@@ -24,7 +24,7 @@ jobs:
           command: |
             echo 'export PATH=~$PATH:~/.local/bin' >> $BASH_ENV && source $BASH_ENV
             pip install --user -r requirements.txt
-  build_push_image_compute_engine_mangaged:
+  build_push_image_cloud_run_mangaged:
     docker:
       - image: circleci/python:3.10.1
     steps:
@@ -56,12 +56,12 @@ jobs:
           image: "us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME"
           service-name: "orb-gcp-cloud-run"
           region: $GOOGLE_COMPUTE_ZONE
-          unauthenticated: true
+          unauthenticated: false
 workflows:
   build_test_deploy:
     jobs:
       - pep8
       - build_test
-      - build_push_image_compute_engine_mangaged:
+      - build_push_image_cloud_run_mangaged:
           requires:
             - build_test
