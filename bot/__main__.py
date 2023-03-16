@@ -1,4 +1,5 @@
 import os
+import sys
 import asyncio
 
 import discord
@@ -87,6 +88,8 @@ async def yurufuwa_test(interaction: Interaction):
 
 async def main():
     token: str = os.getenv("TestBotPythonDevToken")
+    if len(sys.argv) > 1:
+        token = sys.argv[1]
     async with bot:
         await load_extension()
         await bot.start(token)
