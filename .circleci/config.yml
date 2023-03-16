@@ -43,11 +43,6 @@ jobs:
             pip install --user -r requirements.txt
             pyinstaller -F hello_world.py
             docker build -t us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME -t us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME:$TAG .
-      # docker push us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME:$TAG
-      # sudo docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASSWORD
-      # docker push us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME:$TAG
-      # sudo docker login --username $DOCKERHUB_USER --password-stdin $DOCKERHUB_PASSWORD
-      # pyinstaller -F hello_world.py
       - gcp-gcr/gcr-auth:
           gcloud-service-key: GOOGLE_CLOUD_KEYS
           google-project-id: GOOGLE_PROJECT_ID
@@ -56,12 +51,12 @@ jobs:
           google-project-id: GOOGLE_PROJECT_ID
           registry-url: "us.gcr.io"
           image: $IMAGE_NAME
-      # - cloudrun/deploy:
-      #     platform: "managed"
-      #     image: "us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME"
-      #     service-name: "orb-gcp-cloud-run"
-      #     region: $GOOGLE_COMPUTE_ZONE
-      #     unauthenticated: true
+      - cloudrun/deploy:
+          platform: "managed"
+          image: "us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME"
+          service-name: "orb-gcp-cloud-run"
+          region: $GOOGLE_COMPUTE_ZONE
+          unauthenticated: true
 workflows:
   build_test_deploy:
     jobs:
