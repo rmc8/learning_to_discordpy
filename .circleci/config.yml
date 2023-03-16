@@ -35,9 +35,6 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: false
       - run:
-          name: setDiscordBotToken
-          command: "python ./set_token.py\n"
-      - run:
           name: Build app and Docker image
           command: |
             sudo docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASSWORD
@@ -47,8 +44,10 @@ jobs:
             echo 'export TAG=${CIRCLE_SHA1}' >> $BASH_ENV
             echo 'export IMAGE_NAME=$CIRCLE_PROJECT_REPONAME' >> $BASH_ENV && source $BASH_ENV
             pip install --user -r requirements.txt
-            pyinstaller -F hello_world.py
+            python ./set_token.py
+            ls
             docker build -t us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME -t us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME:$TAG .
+      # pyinstaller -F hello_world.py
       - gcp-gcr/gcr-auth:
           gcloud-service-key: GOOGLE_CLOUD_KEYS
           google-project-id: GOOGLE_PROJECT_ID
