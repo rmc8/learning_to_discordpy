@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands
 from discord import Interaction, Member, ButtonStyle
 
-from local_lib import MY_GUILD_ID
+from local_lib import MY_GUILD_ID, util
 from local_lib.cog import INITIAL_EXTENSIONS
 
 MY_GUILD = discord.Object(id=MY_GUILD_ID)
@@ -86,7 +86,7 @@ async def yurufuwa_test(interaction: Interaction):
 
 
 async def main():
-    token: str = os.getenv("TestBotPythonDevToken")
+    token: str = util.get_token()
     async with bot:
         await load_extension()
         await bot.start(token)
