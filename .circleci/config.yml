@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   gcp-gcr: circleci/gcp-gcr@0.6.1
+  gcp-cli: circleci/gcp-cli@3.0.1
   cloudrun: circleci/gcp-cloud-run@1.0.0
 jobs:
   pep8:
@@ -24,7 +25,7 @@ jobs:
           command: |
             echo 'export PATH=~$PATH:~/.local/bin' >> $BASH_ENV && source $BASH_ENV
             pip install --user -r requirements.txt
-  build_push_image_cloud_run_mangaged:
+  build_push_image:
     docker:
       - image: circleci/python:3.10.1
         auth:
@@ -63,12 +64,30 @@ jobs:
       #     service-name: "orb-gcp-cloud-run"
       #     region: $GOOGLE_COMPUTE_ZONE
       #     unauthenticated: true
+  deploy:
+    executor: gcp-cli/default
+    docker:
+      - image: circleci/python:3.10.1
+        auth:
+            username: $DOCKERHUB_USER
+            password: $DOCKERHUB_PASSWORD
+    steps:
+      - checkout
+      - gcp-cli/setup:
+          version: 404.0.0
+      - run:
+          name: Deploy to compute engine
+          command: |
+            echo "hoge"
 workflows:
   build_test_deploy:
     jobs:
       - pep8
       - build_test
-      - build_push_image_cloud_run_mangaged:
+      - build_push_image:
           requires:
             - pep8
             - build_test
+      - deploy:
+          requires:
+            - build_push_image
