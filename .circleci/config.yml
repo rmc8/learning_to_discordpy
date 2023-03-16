@@ -44,7 +44,7 @@ jobs:
             echo 'export IMAGE_NAME=$CIRCLE_PROJECT_REPONAME' >> $BASH_ENV && source $BASH_ENV
             pip install --user -r requirements.txt
             docker build -t us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME -t us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME:$TAG
-            docker push
+            docker push us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME:$TAG
       # sudo docker login --username $DOCKERHUB_USER --password-stdin $DOCKERHUB_PASSWORD
       # pyinstaller -F hello_world.py
       # - gcp-gcr/gcr-auth:
