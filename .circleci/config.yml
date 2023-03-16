@@ -48,14 +48,14 @@ jobs:
       # docker push us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME:$TAG
       # sudo docker login --username $DOCKERHUB_USER --password-stdin $DOCKERHUB_PASSWORD
       # pyinstaller -F hello_world.py
-      # - gcp-gcr/gcr-auth:
-      #     gcloud-service-key: GOOGLE_CLOUD_KEYS
-      #     google-project-id: GOOGLE_PROJECT_ID
-      #     google-compute-zone: GOOGLE_COMPUTE_ZONE
-      # - gcp-gcr/push-image:
-      #     google-project-id: GOOGLE_PROJECT_ID
-      #     registry-url: "us.gcr.io"
-      #     image: $IMAGE_NAME
+      - gcp-gcr/gcr-auth:
+          gcloud-service-key: GOOGLE_CLOUD_KEYS
+          google-project-id: GOOGLE_PROJECT_ID
+          google-compute-zone: GOOGLE_COMPUTE_ZONE
+      - gcp-gcr/push-image:
+          google-project-id: GOOGLE_PROJECT_ID
+          registry-url: "us.gcr.io"
+          image: $IMAGE_NAME
       # - cloudrun/deploy:
       #     platform: "managed"
       #     image: "us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME"
