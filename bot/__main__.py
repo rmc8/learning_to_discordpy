@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands
 from discord import Interaction, Member, ButtonStyle
 
-from local_lib import event_point, MY_GUILD_ID
+from local_lib import MY_GUILD_ID
 from local_lib.cog import INITIAL_EXTENSIONS
 
 MY_GUILD = discord.Object(id=MY_GUILD_ID)
@@ -71,13 +71,6 @@ class NoButton(discord.ui.Button):
     async def callback(self, interaction: Interaction):
         await interaction.response.send_message("No")
         await interaction.followup.send("あなたはゆるふわです！ゆるふわ～っ")
-
-
-# Commands
-@bot.hybrid_command()
-async def calc_ep(ctx, target_point: int):
-    ret: str = event_point.calc(target_point)
-    await ctx.send(ret)
 
 
 @bot.tree.command()
