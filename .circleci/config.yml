@@ -45,22 +45,23 @@ jobs:
             echo 'export IMAGE_NAME=$CIRCLE_PROJECT_REPONAME' >> $BASH_ENV && source $BASH_ENV
             pip install --user -r requirements.txt
             ls
-            docker build -t us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME -t us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME:$TAG .
+            docker build -t mikohei/$GOOGLE_PROJECT_ID/$IMAGE_NAME -t mikohei/$GOOGLE_PROJECT_ID/$IMAGE_NAME:$TAG .
+            docker push mikohei/$GOOGLE_PROJECT_ID/$IMAGE_NAME:$TAG
       # pyinstaller -F hello_world.py
-      - gcp-gcr/gcr-auth:
-          gcloud-service-key: GOOGLE_CLOUD_KEYS
-          google-project-id: GOOGLE_PROJECT_ID
-          google-compute-zone: GOOGLE_COMPUTE_ZONE
-      - gcp-gcr/push-image:
-          google-project-id: GOOGLE_PROJECT_ID
-          registry-url: "us.gcr.io"
-          image: $IMAGE_NAME
-      - cloudrun/deploy:
-          platform: "managed"
-          image: "us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME"
-          service-name: "orb-gcp-cloud-run"
-          region: $GOOGLE_COMPUTE_ZONE
-          unauthenticated: true
+      # - gcp-gcr/gcr-auth:
+      #     gcloud-service-key: GOOGLE_CLOUD_KEYS
+      #     google-project-id: GOOGLE_PROJECT_ID
+      #     google-compute-zone: GOOGLE_COMPUTE_ZONE
+      # - gcp-gcr/push-image:
+      #     google-project-id: GOOGLE_PROJECT_ID
+      #     registry-url: "us.gcr.io"
+      #     image: $IMAGE_NAME
+      # - cloudrun/deploy:
+      #     platform: "managed"
+      #     image: "us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME"
+      #     service-name: "orb-gcp-cloud-run"
+      #     region: $GOOGLE_COMPUTE_ZONE
+      #     unauthenticated: true
 workflows:
   build_test_deploy:
     jobs:
