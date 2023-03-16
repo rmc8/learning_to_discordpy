@@ -14,14 +14,6 @@ jobs:
       - run:
           name: pep8Check
           command: "sudo flake8 --max-complexity 10\n"
-  set_discord_token:
-    docker:
-      - image: circleci/python:3.10.1
-    steps:
-      - checkout
-      - run:
-          name: setDiscordBotToken
-          command: "python ./set_token.py\n"
   build_test:
     docker:
       - image: circleci/python:3.10.1
@@ -42,6 +34,9 @@ jobs:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: false
+      - run:
+          name: setDiscordBotToken
+          command: "python ./set_token.py\n"
       - run:
           name: Build app and Docker image
           command: |
@@ -72,10 +67,8 @@ workflows:
   build_test_deploy:
     jobs:
       - pep8
-      - set_discord_token
       - build_test
       - build_push_image_cloud_run_mangaged:
           requires:
             - pep8
-            - set_discord_token
             - build_test
