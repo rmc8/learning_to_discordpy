@@ -1,4 +1,5 @@
 pyinstaller
+python-dotenv
 discord.py
 discord.py[voice]
 discord-py-interactions

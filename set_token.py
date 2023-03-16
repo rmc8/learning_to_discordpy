@@ -1,9 +1,14 @@
 import os
 
 
+def write_val(val):
+    with open(".env", "a", encoding="utf-8") as f:
+        print(val, file=f)
+
+
 def main():
-    with open("token", "w", encoding="utf-8") as f:
-        print(os.getenv("DISCORD_BOT_TOKEN"), file=f)
+    if token := os.getenv("DISCORD_BOT_TOKEN"):
+        write_val(f"TestBotPythonDevToken={token}")
 
 
 if __name__ == "__main__":
