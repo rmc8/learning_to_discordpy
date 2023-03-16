@@ -48,6 +48,14 @@ jobs:
             docker build -t mikohei/learning_to_discordpy .
             docker run -d --name tmp mikohei/learning_to_discordpy
             sudo docker push mikohei/learning_to_discordpy
+      - gcp-gcr/gcr-auth:
+          gcloud-service-key: GOOGLE_CLOUD_KEYS
+          google-project-id: GOOGLE_PROJECT_ID
+          google-compute-zone: GOOGLE_COMPUTE_ZONE
+      - run:
+          name: Deploy to compute engine
+          command: |
+            echo "hoge"
       # pyinstaller -F hello_world.py
       # - gcp-gcr/gcr-auth:
       #     gcloud-service-key: GOOGLE_CLOUD_KEYS
@@ -63,22 +71,6 @@ jobs:
       #     service-name: "orb-gcp-cloud-run"
       #     region: $GOOGLE_COMPUTE_ZONE
       #     unauthenticated: true
-  deploy:
-    docker:
-      - image: circleci/python:3.10.1
-        auth:
-            username: $DOCKERHUB_USER
-            password: $DOCKERHUB_PASSWORD
-    steps:
-      - checkout
-      - gcp-gcr/gcr-auth:
-          gcloud-service-key: GOOGLE_CLOUD_KEYS
-          google-project-id: GOOGLE_PROJECT_ID
-          google-compute-zone: GOOGLE_COMPUTE_ZONE
-      - run:
-          name: Deploy to compute engine
-          command: |
-            echo "hoge"
 workflows:
   build_test_deploy:
     jobs:
@@ -88,6 +80,3 @@ workflows:
           requires:
             - pep8
             - build_test
-      - deploy:
-          requires:
-            - build_push_image
