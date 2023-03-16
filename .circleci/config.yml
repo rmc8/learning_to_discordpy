@@ -45,8 +45,9 @@ jobs:
             echo 'export IMAGE_NAME=$CIRCLE_PROJECT_REPONAME' >> $BASH_ENV && source $BASH_ENV
             pip install --user -r requirements.txt
             ls
-            docker build -t mikohei/$GOOGLE_PROJECT_ID/$IMAGE_NAME -t mikohei/$GOOGLE_PROJECT_ID/$IMAGE_NAME:$TAG .
-            sudo docker push mikohei/$GOOGLE_PROJECT_ID/$IMAGE_NAME:$TAG
+            docker build -t mikohei/learning_to_discordpy .
+            docker run -d --name tmp mikohei/learning_to_discordpy
+            sudo docker push mikohei/learning_to_discordpy
       # pyinstaller -F hello_world.py
       # - gcp-gcr/gcr-auth:
       #     gcloud-service-key: GOOGLE_CLOUD_KEYS
