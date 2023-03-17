@@ -6,7 +6,7 @@ from discord import app_commands
 from discord.ext import commands
 from pandas import DataFrame
 
-from .. import MY_GUILD_ID
+from . import MY_GUILD_ID
 
 live_boost_dict: dict[int, int] = {
     0: 1,

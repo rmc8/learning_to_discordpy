@@ -4,7 +4,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from .. import MY_GUILD_ID
+from . import MY_GUILD_ID
 
 hands: list = "グー,チョキ,パー".split(",")
 
@@ -34,7 +34,7 @@ def choice() -> str:
 def judgment(me) -> str:
     judge = judge_dict.get(me)
     if judge is None:
-        return "無効試合"
+        return "無効試合: {me}"
     rival = choice()
     w_l = judge[rival]
     return f"勝敗: {w_l}, 自分: {me}, 相手: {rival}"
@@ -47,7 +47,7 @@ class Janken(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print("Successfully loaded : EventPoint")
+        print("Successfully loaded : Janken")
         await self.bot.tree.sync(guild=discord.Object(MY_GUILD_ID))
         print("sync")
 

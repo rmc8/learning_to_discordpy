@@ -44,32 +44,10 @@ jobs:
             echo 'export TAG=${CIRCLE_SHA1}' >> $BASH_ENV
             echo 'export IMAGE_NAME=$CIRCLE_PROJECT_REPONAME' >> $BASH_ENV && source $BASH_ENV
             pip install --user -r requirements.txt
-            ls
             docker build -t mikohei/learning_to_discordpy .
             docker run -d --name tmp mikohei/learning_to_discordpy
             sudo docker push mikohei/learning_to_discordpy
-      # - gcp-gcr/gcr-auth:
-      #     gcloud-service-key: GOOGLE_CLOUD_KEYS
-      #     google-project-id: GOOGLE_PROJECT_ID
-      #     google-compute-zone: GOOGLE_COMPUTE_ZONE
-      # - run:
-      #     name: Deploy to compute engine
-      #     command: |
-      #       gcloud compute ssh --zone "us-central1-a" "discord-bot-test"  --project $GOOGLE_PROJECT_ID
-      # - gcp-gcr/gcr-auth:
-      #     gcloud-service-key: GOOGLE_CLOUD_KEYS
-      #     google-project-id: GOOGLE_PROJECT_ID
-      #     google-compute-zone: GOOGLE_COMPUTE_ZONE
-      # - gcp-gcr/push-image:
-      #     google-project-id: GOOGLE_PROJECT_ID
-      #     registry-url: "us.gcr.io"
-      #     image: $IMAGE_NAME
-      # - cloudrun/deploy:
-      #     platform: "managed"
-      #     image: "us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME"
-      #     service-name: "orb-gcp-cloud-run"
-      #     region: $GOOGLE_COMPUTE_ZONE
-      #     unauthenticated: true
+            ls
 workflows:
   build_test_deploy:
     jobs:
