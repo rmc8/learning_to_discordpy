@@ -1,10 +1,21 @@
+import traceback
 import itertools
 from typing import List
 
 import discord
-from discord import app_commands
+from discord import app_commands, ButtonStyle
 from discord.ext import commands
+from discord.ext.commands import Context
+from discord.ext.ui import (
+    Message,
+    MessageProvider,
+    PageView,
+    PaginationView,
+    View,
+    ViewTracker,
+)
 from pandas import DataFrame
+import Paginator
 
 from . import MY_GUILD_ID
 
@@ -34,10 +45,14 @@ CALC_RESULTS_TEMPLATE: str = """
 """.strip()
 
 
+class NonNumericInputException(Exception):
+    def __init__(self, msg: str):
+        super().__init__(msg)
+
+
 def calc_event_point(base_point: int, event_bonus: int, score: int) -> int:
     event_bonus_weight: float = (100 + event_bonus) / 100
-    score_bonus_f: float = (base_point +
-                            (score / SCORE_BASE)) * event_bonus_weight
+    score_bonus_f: float = (base_point + (score / SCORE_BASE)) * event_bonus_weight
     return int(score_bonus_f)
 
 
@@ -70,10 +85,9 @@ def create_event_point_table() -> List[dict]:
     return table
 
 
-def get_ret_lines(fil_df: DataFrame) -> str:
-    columns_label: str = "\t".join(fil_df.columns.tolist())
-    lines: List[str] = [columns_label]
-    for record in fil_df.to_dict(orient="records")[:16]:
+def get_ret_lines(fil_df: DataFrame) -> List[str]:
+    lines: List[str] = []
+    for record in fil_df.to_dict(orient="records"):
         line_list: list = []
         line_list.append(f"{record['event_bonus']:>3}%")
         line_list.append(f"{record['live_bonus']:>2}")
@@ -82,52 +96,75 @@ def get_ret_lines(fil_df: DataFrame) -> str:
         line_list.append(f"{record['event_point']:>5}")
         line: str = "\t".join(line_list)
         lines.append(line)
-    return "\n".join(lines)
+    return lines
 
 
 def sort_df(df: DataFrame) -> DataFrame:
     return df.sort_values(["live_bonus", "event_bonus", "lower_score_limit"])
 
 
-def calc(num_of_points_wanted: int) -> str:
+def get_page_list(lines: List[str], columns: List[str]) -> List[str]:
+    page_2d_list: List[str] = [
+        lines[i * 10 : (i + 1) * 10] for i in range(len(lines) // 10)
+    ]
+    page_list: List[str] = ["\n".join(columns + page) for page in page_2d_list]
+    return page_list
+
+
+def calc(num_of_points_wanted: int) -> List[str]:
     event_point_df = DataFrame(create_event_point_table())
-    fil_df = event_point_df[event_point_df["event_point"] ==
-                            num_of_points_wanted]
+    fil_df = event_point_df[event_point_df["event_point"] == num_of_points_wanted]
     if fil_df.empty:
-        return "該当のイベントポイントを獲得する組み合わせが見つかりませんでした。"
+        return ["該当のイベントポイントを獲得する組み合わせが見つかりませんでした。"]
     sorted_df = sort_df(fil_df)
-    return CALC_RESULTS_TEMPLATE.format(res=get_ret_lines(sorted_df))
+    lines: List[str] = get_ret_lines(sorted_df)
+    columns_label: List[str] = ["\t".join(sorted_df.columns.tolist())]
+    page_list: List[str] = get_page_list(lines, columns_label)
+    return page_list
 
 
-class EventPoint(commands.Cog):
+class Page(PageView):
+    def __init__(self, content: str):
+        super(Page, self).__init__()
+        self.content = content
+
+    async def body(self, _paginator: PaginationView) -> Message | View:
+        return Message(self.content)
+
+    async def on_appear(self, paginator: PaginationView) -> None:
+        print(f"appeared page: {paginator.page}")
+
+
+class EventPointView(commands.Cog):
+    NAME: str = "EventPointCalc"
 
     def __init__(self, bot):
         self.bot = bot
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print("Successfully loaded : EventPoint")
-        await self.bot.tree.sync(guild=discord.Object(MY_GUILD_ID))
-        print("sync")
+        print(f"Successfully loaded : {self.NAME}")
 
     @app_commands.command(
         name="calc_point",
-        description="EventPointの調整用の計算機です",
+        description=f"EventPoint調整のための計算機です",
     )
     @app_commands.guilds(MY_GUILD_ID)
     @app_commands.checks.has_permissions(administrator=True)
     async def calc_point(
         self,
         interaction: discord.Interaction,
-        tar_point: int,
+        target_point: str,
     ):
-        ret = calc(tar_point)
-        print(ret)
-        await interaction.response.send_message(
-            ret,
-            ephemeral=True,
-        )
+        if not f"{target_point}".strip().isdigit():
+            raise NonNumericInputException("数値を半角で入力してください")
+        pages: List[str] = calc(int(f"{target_point}"))
+        ctx = await Context.from_interaction(interaction)
+        view = PaginationView([Page(f"```\n{p}\n```") for p in pages])
+        tracker = ViewTracker(view, timeout=None)
+        await tracker.track(MessageProvider(ctx.channel))
+        await interaction.response.send_message("Done", ephemeral=True)
 
 
 async def setup(bot: commands.Bot):
-    await bot.add_cog(EventPoint(bot))
+    await bot.add_cog(EventPointView(bot))

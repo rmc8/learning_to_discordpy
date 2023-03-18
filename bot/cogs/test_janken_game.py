@@ -41,15 +41,14 @@ def judgment(me) -> str:
 
 
 class Janken(commands.Cog):
+    NAME:str = "Janken"
 
     def __init__(self, bot):
         self.bot = bot
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print("Successfully loaded : Janken")
-        await self.bot.tree.sync(guild=discord.Object(MY_GUILD_ID))
-        print("sync")
+        print(f"Successfully loaded : {self.NAME}")
 
     @app_commands.command(name="janken", description="じゃんけんができます")
     @app_commands.guilds(MY_GUILD_ID)

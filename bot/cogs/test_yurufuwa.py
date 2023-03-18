@@ -7,11 +7,9 @@ from . import MY_GUILD_ID
 
 # Buttons
 class YesButton(discord.ui.Button):
-
-    def __init__(self,
-                 *,
-                 style: ButtonStyle = ButtonStyle.secondary,
-                 label: str = "yes"):
+    def __init__(
+        self, *, style: ButtonStyle = ButtonStyle.secondary, label: str = "yes"
+    ):
         super().__init__(style=style, label=label)
 
     async def callback(self, interaction: Interaction):
@@ -20,28 +18,25 @@ class YesButton(discord.ui.Button):
 
 
 class NoButton(discord.ui.Button):
-
-    def __init__(self,
-                 *,
-                 style: ButtonStyle = ButtonStyle.secondary,
-                 label: str = "no"):
+    def __init__(
+        self, *, style: ButtonStyle = ButtonStyle.secondary, label: str = "no"
+    ):
         super().__init__(style=style, label=label)
 
     async def callback(self, interaction: Interaction):
         await interaction.response.send_message("No")
-        await interaction.followup.send("あなたはゆるふわです！ゆるふわ～っ")
+        await interaction.edit_original_response.send("あなたはゆるふわです！ゆるふわ～っ")
 
 
 class YurufuwaTest(commands.Cog):
+    NAME: str = "YurufuwaTest"
 
     def __init__(self, bot):
         self.bot = bot
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print("Successfully loaded : YurufuwaTest")
-        await self.bot.tree.sync(guild=discord.Object(MY_GUILD_ID))
-        print("sync")
+        print(f"Successfully loaded : {self.NAME}")
 
     @app_commands.command(name="yurufuwa_test", description="ボタンのテストです")
     @app_commands.guilds(MY_GUILD_ID)

@@ -1,6 +1,8 @@
 pyinstaller
 discord.py
 discord.py[voice]
+discord.py-pagination
 discord-py-interactions
 interactions-wait-for
 pandas
+tqdm

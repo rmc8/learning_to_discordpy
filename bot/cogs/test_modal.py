@@ -6,8 +6,8 @@ from . import MY_GUILD_ID
 
 
 class SelfIntroductionModal(
-        discord.ui.Modal,
-        title="Questionnaire Response",
+    discord.ui.Modal,
+    title="Questionnaire Response",
 ):
     name = discord.ui.TextInput(label="名前")
     self_intr = discord.ui.TextInput(
@@ -21,7 +21,7 @@ class SelfIntroductionModal(
     ):
         lines: list = [
             f"{self.name}さん、",
-            "自己紹介ありがとうございます！"
+            "自己紹介ありがとうございます！",
             "",
             "",
             "【自己紹介】",
@@ -34,15 +34,14 @@ class SelfIntroductionModal(
 
 
 class ModalTest(commands.Cog):
+    NAME: str = "PostForum"
 
     def __init__(self, bot):
         self.bot = bot
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print("Successfully loaded : PostForum")
-        await self.bot.tree.sync(guild=discord.Object(MY_GUILD_ID))
-        print("sync")
+        print(f"Successfully loaded : {self.NAME}")
 
     @app_commands.command(name="modal_test", description="モーダルのテストです")
     @app_commands.guilds(MY_GUILD_ID)

@@ -6,15 +6,15 @@ from . import MY_GUILD_ID
 
 
 class ContextTest(commands.Cog):
+    NAME:str = "ContextTest"
 
     def __init__(self, bot):
         self.bot = bot
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print("Successfully loaded : ContextTest")
-        await self.bot.tree.sync(guild=discord.Object(MY_GUILD_ID))
-        print("sync")
+        print(f"Successfully loaded : {self.NAME}")
+
 
     @app_commands.command(name="context_test", description="ボタンのテストです")
     @app_commands.guilds(MY_GUILD_ID)
