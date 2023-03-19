@@ -27,7 +27,7 @@ bot = MyClient(intents=intents, command_prefix=".")
 async def load_extension():
     print("Load extension")
     for n, cog in enumerate(INITIAL_EXTENSIONS, 1):
-        print(f"{n}/{len(INITIAL_EXTENSIONS)}: {n/len(INITIAL_EXTENSIONS)*100}%")
+        print(f"{n}/{len(INITIAL_EXTENSIONS)}: {n/len(INITIAL_EXTENSIONS)*100:.02f}%")
         await bot.load_extension(cog)
 
 
