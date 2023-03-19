@@ -103,7 +103,7 @@ def sort_df(df: DataFrame) -> DataFrame:
 
 def get_page_list(lines: List[str], columns: List[str]) -> List[str]:
     page_2d_list: List[str] = [
-        lines[i * 10 : (i + 1) * 10] for i in range(len(lines) // 10)
+        lines[i * 10:(i + 1) * 10] for i in range(len(lines) // 10)
     ]
     page_list: List[str] = ["\n".join(columns + page) for page in page_2d_list]
     return page_list
