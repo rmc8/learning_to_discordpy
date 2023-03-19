@@ -23,7 +23,7 @@ judge_dict: dict = {
         "グー": "勝ち",
         "チョキ": "負け",
         "パー": "あいこ",
-    }
+    },
 }
 
 
@@ -41,7 +41,7 @@ def judgment(me) -> str:
 
 
 class Janken(commands.Cog):
-    NAME:str = "Janken"
+    NAME: str = "Janken"
 
     def __init__(self, bot):
         self.bot = bot

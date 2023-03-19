@@ -1,1 +1,4 @@
-E501
+[flake8]
+ignore=E501
+max-line-length=100
+max-complexity=10
