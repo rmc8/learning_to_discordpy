@@ -1,4 +1,3 @@
-import discord
 from discord import app_commands, Interaction, Member
 from discord.ext import commands
 
@@ -6,7 +5,7 @@ from . import MY_GUILD_ID
 
 
 class ContextTest(commands.Cog):
-    NAME:str = "ContextTest"
+    NAME: str = "ContextTest"
 
     def __init__(self, bot):
         self.bot = bot
@@ -14,7 +13,6 @@ class ContextTest(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print(f"Successfully loaded : {self.NAME}")
-
 
     @app_commands.command(name="context_test", description="ボタンのテストです")
     @app_commands.guilds(MY_GUILD_ID)

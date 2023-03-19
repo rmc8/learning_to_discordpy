@@ -1,9 +1,8 @@
-import traceback
 import itertools
 from typing import List
 
 import discord
-from discord import app_commands, ButtonStyle
+from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import Context
 from discord.ext.ui import (
@@ -15,7 +14,6 @@ from discord.ext.ui import (
     ViewTracker,
 )
 from pandas import DataFrame
-import Paginator
 
 from . import MY_GUILD_ID
 
@@ -147,7 +145,7 @@ class EventPointView(commands.Cog):
 
     @app_commands.command(
         name="calc_point",
-        description=f"EventPoint調整のための計算機です",
+        description="EventPoint調整のための計算機です",
     )
     @app_commands.guilds(MY_GUILD_ID)
     @app_commands.checks.has_permissions(administrator=True)
