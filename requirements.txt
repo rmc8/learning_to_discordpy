@@ -6,4 +6,4 @@ discord-py-interactions
 interactions-wait-for
 pandas
 tqdm
--e git+https://github.com/sizumita/discord-ext-ui.git
+-e git+https://github.com/sizumita/discord-ext-ui.git#egg=discord-ext-ui-0.1
