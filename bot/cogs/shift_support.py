@@ -18,6 +18,10 @@ DB_CSV_PATH: str = os.path.join(
 )
 
 
+def get_embed_table(label, df):
+    print(label, df)
+
+
 class ShiftSupportView(View):
     def __init__(self):
         super().__init__()
