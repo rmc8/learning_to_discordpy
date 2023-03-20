@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 
 import pandas as pd
-import discord
 from discord import app_commands, Interaction, ui
 from discord.ui import View, Button
 from discord.ext import commands
